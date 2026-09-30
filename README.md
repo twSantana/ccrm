@@ -2,6 +2,8 @@
 
 A full-featured CRM built with React, shadcn-admin-kit, and Supabase.
 
+> **About this repository:** This repository is a copy and customized adaptation of the original project at [leldiss/crm](https://github.com/leldiss/crm). The original project and its authors retain their respective copyrights and license. This copy adds the customizations listed below.
+
 https://github.com/user-attachments/assets/0d7554b5-49ef-41c6-bcc9-a76214fc5c99
 
 Atomic CRM is free and open-source. You can test it online at https://marmelab.com/atomic-crm-demo.
@@ -18,6 +20,20 @@ Atomic CRM is free and open-source. You can test it online at https://marmelab.c
 - 📜 **Track Activity History**: View all interactions in aggregated activity logs.
 - 🔗 **Integrate via API**: Connect seamlessly with other systems using our API.
 - 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
+- 📣 **Manage Influencers and Campaigns**: Track influencer profiles, campaign performance, owners, and tags.
+
+## Customizations in This Copy
+
+This copy includes the following project-specific changes:
+
+- Includes an Influencer Hub with influencer and campaign records, campaign stages, investment, sales, commission, ROI, and profit tracking.
+- Added influencer tags using the CRM tag records, and assigned each influencer to a responsible user. By default, the creator is selected; authenticated users can see all influencers.
+- Updated influencer creation to return to the list after a successful save, and added owner and tag details to influencer forms and views.
+- Changed the initial authentication screen to show login first, with first-account creation available when the database has not been initialized. Signup errors now show the message returned by Supabase.
+- Added `supabase/setup.sql` for setting up a new, empty Supabase project from the Dashboard SQL Editor. It creates the CRM schema, policies, views, auth triggers, storage bucket, and Influencer Hub tables. **Run it only once on a new project**, not on a database that already has this schema.
+- Added `supabase/migrations/20260930160500_influencer_tags.sql` to add influencer tags to an existing project. Apply this migration to an already-configured Supabase database before using influencer tags.
+
+The Supabase secret/service-role key must never be used in the browser or committed to this repository. Configure only the project URL and publishable/anon key as frontend environment variables.
 
 ## Installation
 
@@ -27,10 +43,10 @@ To run this project locally, you will need the following tools installed on your
 - Node 22 LTS
 - Docker (required by Supabase)
 
-Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) repository to your user/organization, then clone it locally:
+Clone this customized copy:
 
 ```sh
-git clone https://github.com/[username]/atomic-crm.git
+git clone https://github.com/twSantana/ccrm.git
 ```
 
 Install dependencies:
@@ -70,6 +86,17 @@ If you need debug the backend, you can access the following services:
 1. [Configuring Supabase](./doc/src/content/docs/developers/supabase-configuration.mdx)
 2. [Configuring Inbound Email](./doc/src/content/docs/developers/inbound-email-configuration.mdx) *(optional)*
 3. [Deployment](./doc/src/content/docs/developers/deploy.mdx)
+
+### Deploying this copy to Vercel
+
+In the Vercel project settings, configure these frontend environment variables for the relevant deployment environments:
+
+```text
+VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<your-publishable-or-anon-key>
+```
+
+Apply the database setup or migrations to the same Supabase project. Never set a Supabase secret/service-role key as a `VITE_` variable; Vite exposes `VITE_` variables in the browser bundle.
 
 ## Customizing Atomic CRM
 
