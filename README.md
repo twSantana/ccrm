@@ -26,12 +26,12 @@ Atomic CRM is free and open-source. You can test it online at https://marmelab.c
 
 This copy includes the following project-specific changes:
 
-- Includes an Influencer Hub with influencer and campaign records, campaign stages, investment, sales, commission, ROI, and profit tracking.
-- Added influencer tags using the CRM tag records, and assigned each influencer to a responsible user. By default, the creator is selected; authenticated users can see all influencers.
-- Updated influencer creation to return to the list after a successful save, and added owner and tag details to influencer forms and views.
-- Changed the initial authentication screen to show login first, with first-account creation available when the database has not been initialized. Signup errors now show the message returned by Supabase.
-- Added `supabase/setup.sql` for setting up a new, empty Supabase project from the Dashboard SQL Editor. It creates the CRM schema, policies, views, auth triggers, storage bucket, and Influencer Hub tables. **Run it only once on a new project**, not on a database that already has this schema.
-- Added `supabase/migrations/20260930160500_influencer_tags.sql` to add influencer tags to an existing project. Apply this migration to an already-configured Supabase database before using influencer tags.
+- The Influencer Hub includes influencer and campaign records, campaign stages, investment, sales, commission, ROI, and profit tracking.
+- Influencers support tags using the CRM tag records and can be assigned to a responsible user. By default, the creator is selected; authenticated users can see all influencers.
+- Influencer creation returns to the list after a successful save; owner and tag details are available in influencer forms and views.
+- The initial authentication screen shows login first, with first-account creation available when the database has not been initialized. Signup errors display the message returned by Supabase.
+- `supabase/setup.sql` sets up a new, empty Supabase project from the Dashboard SQL Editor. It creates the CRM schema, policies, views, auth triggers, storage bucket, and Influencer Hub tables. **Run it only once on a new project**, not on a database that already has this schema.
+- `supabase/migrations/20260930160500_influencer_tags.sql` adds influencer tags to an existing project. Apply this migration to an already-configured Supabase database before using influencer tags.
 
 The Supabase secret/service-role key must never be used in the browser or committed to this repository. Configure only the project URL and publishable/anon key as frontend environment variables.
 
@@ -52,7 +52,7 @@ git clone https://github.com/twSantana/ccrm.git
 Install dependencies:
 
 ```sh
-cd atomic-crm
+cd ccrm
 make install
 ```
 
