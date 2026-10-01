@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useDataProvider, useNotify } from "ra-core";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,19 +10,11 @@ import { Label } from "@/components/ui/label";
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { SignUpData } from "../types";
-import { LoginSkeleton } from "./LoginSkeleton";
 
 export const SignupPage = () => {
-  const queryClient = useQueryClient();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const navigate = useNavigate();
   const { darkModeLogo: logo, title } = useConfigurationContext();
-  const { data: isInitialized, isPending } = useQuery({
-    queryKey: ["init"],
-    queryFn: async () => {
-      return dataProvider.isInitialized();
-    },
-  });
 
   const { isPending: isSignUpPending, mutate } = useMutation({
     mutationKey: ["signup"],
@@ -30,7 +22,6 @@ export const SignupPage = () => {
       return dataProvider.signUp(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["init"] });
       notify(
         "Account created. Check your email if confirmation is enabled, then sign in.",
       );
@@ -56,15 +47,6 @@ export const SignupPage = () => {
     mode: "onChange",
   });
 
-  if (isPending) {
-    return <LoginSkeleton />;
-  }
-
-  // For the moment, we only allow one user to sign up. Other users must be created by the administrator.
-  if (isInitialized) {
-    return <Navigate to="/login" />;
-  }
-
   const onSubmit: SubmitHandler<SignUpData> = async (data) => {
     mutate(data);
   };
@@ -83,9 +65,7 @@ export const SignupPage = () => {
       <div className="h-full">
         <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
           <h1 className="text-2xl font-bold mb-4">Welcome to {title}</h1>
-          <p className="text-base mb-4">
-            Create the first user account to complete the setup.
-          </p>
+          <p className="text-base mb-4">Create an account to access the CRM.</p>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="first_name">First name</Label>
@@ -140,6 +120,9 @@ export const SignupPage = () => {
               </Button>
             </div>
           </form>
+          <Link to="/login" className="text-sm text-center hover:underline">
+            Back to sign in
+          </Link>
         </div>
       </div>
     </div>

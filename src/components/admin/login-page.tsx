@@ -7,12 +7,9 @@ import { TextInput } from "@/components/admin/text-input";
 import { Notification } from "@/components/admin/notification";
 import { useConfigurationContext } from "@/components/atomic-crm/root/ConfigurationContext.tsx";
 
-export const LoginPage = (props: {
-  redirectTo?: string;
-  allowSignUp?: boolean;
-}) => {
+export const LoginPage = (props: { redirectTo?: string }) => {
   const { darkModeLogo, title } = useConfigurationContext();
-  const { redirectTo, allowSignUp = false } = props;
+  const { redirectTo } = props;
   const [loading, setLoading] = useState(false);
   const login = useLogin();
   const notify = useNotify();
@@ -89,14 +86,9 @@ export const LoginPage = (props: {
             >
               Forgot your password?
             </Link>
-            {allowSignUp && (
-              <Link
-                to={"/sign-up"}
-                className="text-sm text-center hover:underline"
-              >
-                Create the first account
-              </Link>
-            )}
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/sign-up">Create an account</Link>
+            </Button>
           </div>
         </div>
       </div>

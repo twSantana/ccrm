@@ -29,7 +29,7 @@ This copy includes the following project-specific changes:
 - The Influencer Hub includes influencer and campaign records, campaign stages, investment, sales, commission, ROI, and profit tracking.
 - Influencers support tags using the CRM tag records and can be assigned to a responsible user. By default, the creator is selected; authenticated users can see all influencers.
 - Influencer creation returns to the list after a successful save; owner and tag details are available in influencer forms and views.
-- The initial authentication screen shows login first, with first-account creation available when the database has not been initialized. Signup errors display the message returned by Supabase.
+- The authentication screen supports public account registration. The first registered account is an administrator; accounts registered afterward are standard users. Signup errors display the message returned by Supabase.
 - `supabase/setup.sql` sets up a new, empty Supabase project from the Dashboard SQL Editor. It creates the CRM schema, policies, views, auth triggers, storage bucket, and Influencer Hub tables. **Run it only once on a new project**, not on a database that already has this schema.
 - `supabase/migrations/20260930160500_influencer_tags.sql` adds influencer tags to an existing project. Apply this migration to an already-configured Supabase database before using influencer tags.
 
@@ -96,7 +96,7 @@ VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
 VITE_SUPABASE_ANON_KEY=<your-publishable-or-anon-key>
 ```
 
-Apply the database setup or migrations to the same Supabase project. Never set a Supabase secret/service-role key as a `VITE_` variable; Vite exposes `VITE_` variables in the browser bundle.
+Enable email signups in the Supabase project's Authentication settings. Apply the database setup or migrations to the same Supabase project. Never set a Supabase secret/service-role key as a `VITE_` variable; Vite exposes `VITE_` variables in the browser bundle.
 
 ## Customizing Influencer Hub
 
