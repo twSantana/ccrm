@@ -14,7 +14,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: "Atomic CRM",
+      title: "Influencer Hub",
       favicon: "./public/favicon.svg",
       customCss: ["./src/styles/global.css"],
       logo: {
@@ -26,14 +26,14 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:title",
-            content: "Atomic CRM Documentation",
+            content: "Influencer Hub Documentation",
           },
         },
         {
           tag: "meta",
           attrs: {
             property: "og:description",
-            content: "A full-featured CRM toolkit for personalized solutions.",
+            content: "Manage influencers, campaigns, partnerships, and performance.",
           },
         },
         {
