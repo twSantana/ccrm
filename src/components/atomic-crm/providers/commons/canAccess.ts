@@ -22,5 +22,9 @@ export const canAccess = <
     return false;
   }
 
+  if (params.resource === "accounts") {
+    return false;
+  }
+
   return true;
 };

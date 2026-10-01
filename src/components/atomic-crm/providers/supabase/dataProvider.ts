@@ -2,7 +2,9 @@ import { supabaseDataProvider } from "ra-supabase-core";
 import {
   withLifecycleCallbacks,
   type CreateParams,
+  type DeleteParams,
   type DataProvider,
+  type GetOneParams,
   type GetListParams,
   type Identifier,
   type UpdateParams,
@@ -16,6 +18,7 @@ import type {
   RAFile,
   Sale,
   SalesFormData,
+  SocialAccount,
   SignUpData,
 } from "../../types";
 import { getActivityLog } from "../commons/activity";
@@ -37,6 +40,19 @@ const baseDataProvider = supabaseDataProvider({
   supabaseClient: supabase,
   sortOrder: "asc,desc.nullslast" as any,
 });
+
+async function callSocialAccounts<T>(body: Record<string, unknown>) {
+  const { data, error } = await supabase.functions.invoke<T>(
+    "social-accounts",
+    {
+      body,
+    },
+  );
+  if (error) throw new Error(error.message);
+  if (data === null)
+    throw new Error("No response received from account service.");
+  return data;
+}
 
 const processCompanyLogo = async (params: any) => {
   let logo = params.data.logo;
@@ -82,6 +98,15 @@ async function processContactAvatar(
 const dataProviderWithCustomMethods = {
   ...baseDataProvider,
   async getList(resource: string, params: GetListParams) {
+    if (resource === "accounts") {
+      return callSocialAccounts<{ data: SocialAccount[]; total: number }>({
+        action: "list",
+        page: params.pagination.page,
+        perPage: params.pagination.perPage,
+        sortField: params.sort.field,
+        sortOrder: params.sort.order,
+      });
+    }
     if (resource === "companies") {
       return baseDataProvider.getList("companies_summary", params);
     }
@@ -91,7 +116,13 @@ const dataProviderWithCustomMethods = {
 
     return baseDataProvider.getList(resource, params);
   },
-  async getOne(resource: string, params: any) {
+  async getOne(resource: string, params: GetOneParams) {
+    if (resource === "accounts") {
+      return callSocialAccounts<SocialAccount>({
+        action: "get",
+        id: params.id,
+      }).then((data) => ({ data }));
+    }
     if (resource === "companies") {
       return baseDataProvider.getOne("companies_summary", params);
     }
@@ -100,6 +131,44 @@ const dataProviderWithCustomMethods = {
     }
 
     return baseDataProvider.getOne(resource, params);
+  },
+  async create(resource: string, params: CreateParams) {
+    if (resource === "accounts") {
+      const data = await callSocialAccounts<SocialAccount>({
+        action: "create",
+        data: params.data,
+      });
+      return { data };
+    }
+    return baseDataProvider.create(resource, params);
+  },
+  async update(resource: string, params: UpdateParams) {
+    if (resource === "accounts") {
+      const data = await callSocialAccounts<SocialAccount>({
+        action: "update",
+        id: params.id,
+        data: params.data,
+      });
+      return { data };
+    }
+    return baseDataProvider.update(resource, params);
+  },
+  async delete(resource: string, params: DeleteParams) {
+    if (resource === "accounts") {
+      const data = await callSocialAccounts<SocialAccount>({
+        action: "delete",
+        id: params.id,
+      });
+      return { data };
+    }
+    return baseDataProvider.delete(resource, params);
+  },
+  async revealSocialAccountPassword(id: Identifier) {
+    const { password } = await callSocialAccounts<{ password: string }>({
+      action: "reveal",
+      id,
+    });
+    return password;
   },
 
   async signUp({ email, password, first_name, last_name }: SignUpData) {
@@ -325,7 +394,9 @@ export const dataProvider = withLifecycleCallbacks(
     {
       resource: "campaigns",
       beforeGetList: async (params) => {
-        return applyFullTextSearch(["name", "infoproduct_name", "notes"])(params);
+        return applyFullTextSearch(["name", "infoproduct_name", "notes"])(
+          params,
+        );
       },
     },
     {

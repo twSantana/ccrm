@@ -48,6 +48,15 @@ export type Sale = {
   password?: string;
 } & Pick<RaRecord, "id">;
 
+export type SocialAccount = {
+  platform: "instagram";
+  handle: string;
+  email?: string | null;
+  avatar_url?: string | null;
+  created_at?: string;
+  updated_at?: string;
+} & Pick<RaRecord, "id">;
+
 export type Company = {
   name: string;
   logo: RAFile;
@@ -278,12 +287,16 @@ export type Campaign = {
   updated_at?: string;
 } & Pick<RaRecord, "id">;
 
-export const calculateLucro = (commission: number, investment: number): number => {
+export const calculateLucro = (
+  commission: number,
+  investment: number,
+): number => {
   return commission - investment;
 };
 
-export const calculateROI = (commission: number, investment: number): number => {
-  return investment > 0
-    ? ((commission - investment) / investment) * 100
-    : 0;
+export const calculateROI = (
+  commission: number,
+  investment: number,
+): number => {
+  return investment > 0 ? ((commission - investment) / investment) * 100 : 0;
 };

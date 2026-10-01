@@ -27,11 +27,13 @@ This customized application is based on the open-source CRM linked above. The de
 This copy includes the following project-specific changes:
 
 - The Influencer Hub includes influencer and campaign records, campaign stages, investment, sales, commission, ROI, and profit tracking.
+- The Contas area stores Instagram handles and login emails; passwords are encrypted server-side and access is limited to administrators.
 - Influencers support tags using the CRM tag records and can be assigned to a responsible user. By default, the creator is selected; authenticated users can see all influencers.
 - Influencer creation returns to the list after a successful save; owner and tag details are available in influencer forms and views.
 - The authentication screen supports public account registration. The first registered account is an administrator; accounts registered afterward are standard users. Signup errors display the message returned by Supabase.
 - `supabase/setup.sql` sets up a new, empty Supabase project from the Dashboard SQL Editor. It creates the CRM schema, policies, views, auth triggers, storage bucket, and Influencer Hub tables. **Run it only once on a new project**, not on a database that already has this schema.
 - `supabase/migrations/20260930160500_influencer_tags.sql` adds influencer tags to an existing project. Apply this migration to an already-configured Supabase database before using influencer tags.
+- `supabase/migrations/20261001130000_social_accounts.sql` adds the protected Instagram accounts table. Edge Function access also requires the `ACCOUNT_ENCRYPTION_KEY` secret described below.
 
 The Supabase secret/service-role key must never be used in the browser or committed to this repository. Configure only the project URL and publishable/anon key as frontend environment variables.
 
@@ -97,6 +99,21 @@ VITE_SUPABASE_ANON_KEY=<your-publishable-or-anon-key>
 ```
 
 Enable email signups in the Supabase project's Authentication settings. Apply the database setup or migrations to the same Supabase project. Never set a Supabase secret/service-role key as a `VITE_` variable; Vite exposes `VITE_` variables in the browser bundle.
+
+The Instagram accounts feature also requires a server-only encryption key in Supabase Functions secrets. Generate a 32-byte key and configure it on the linked Supabase project; keep a secure backup in a password manager and do not commit it. If this key is lost or changed, saved passwords cannot be decrypted:
+
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
+npx supabase secrets set ACCOUNT_ENCRYPTION_KEY="<generated-base64-key>"
+```
+
+For local development, put a separately generated key in the ignored `supabase/functions/.env.development` file:
+
+```text
+ACCOUNT_ENCRYPTION_KEY=<generated-base64-key>
+```
+
+Apply the database migration and deploy the `social-accounts` Edge Function after setting the remote secret. Only administrator accounts can access the Contas area. Profile photos are entered as HTTPS image URLs; Instagram does not expose a reliable public profile-photo lookup by handle alone.
 
 ## Customizing Influencer Hub
 

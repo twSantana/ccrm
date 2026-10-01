@@ -1,5 +1,5 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Settings, User } from "lucide-react";
+import { Instagram, Settings, User } from "lucide-react";
 import { CanAccess } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
 import { RefreshButton } from "@/components/admin/refresh-button";
@@ -20,6 +20,8 @@ const Header = () => {
     currentPath = "/influencers";
   } else if (matchPath("/campaigns/*", location.pathname)) {
     currentPath = "/campaigns";
+  } else if (matchPath("/accounts/*", location.pathname)) {
+    currentPath = "/accounts";
   } else {
     currentPath = false;
   }
@@ -62,6 +64,13 @@ const Header = () => {
                   to="/campaigns"
                   isActive={currentPath === "/campaigns"}
                 />
+                <CanAccess resource="accounts" action="list">
+                  <NavigationTab
+                    label="Contas"
+                    to="/accounts"
+                    isActive={currentPath === "/accounts"}
+                  />
+                </CanAccess>
               </nav>
             </div>
             <div className="flex items-center">
@@ -72,6 +81,7 @@ const Header = () => {
                 <CanAccess resource="sales" action="list">
                   <UsersMenu />
                 </CanAccess>
+                <AccountsMenu />
               </UserMenu>
             </div>
           </div>
@@ -108,6 +118,17 @@ const UsersMenu = () => {
     <DropdownMenuItem asChild onClick={onClose}>
       <Link to="/sales" className="flex items-center gap-2">
         <User /> Users
+      </Link>
+    </DropdownMenuItem>
+  );
+};
+
+const AccountsMenu = () => {
+  const { onClose } = useUserMenu() ?? {};
+  return (
+    <DropdownMenuItem asChild onClick={onClose}>
+      <Link to="/accounts" className="flex items-center gap-2">
+        <Instagram /> Contas
       </Link>
     </DropdownMenuItem>
   );
