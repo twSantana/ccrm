@@ -115,6 +115,8 @@ ACCOUNT_ENCRYPTION_KEY=<generated-base64-key>
 
 Apply the database migration and deploy the `social-accounts` Edge Function after setting the remote secret. Only administrator accounts can access the Contas area. Profile photos are entered as HTTPS image URLs; Instagram does not expose a reliable public profile-photo lookup by handle alone.
 
+The GitHub deploy workflow skips `supabase db push` by default because databases initialized from `supabase/setup.sql` do not have the migration history expected by the CLI. Set the repository Actions variable `SUPABASE_DB_PUSH_ENABLED` to `true` only after the remote migration history has been safely baselined. Feature SQL can instead be applied manually in the Supabase SQL Editor.
+
 ## Customizing Influencer Hub
 
 Influencer Hub is built on the Atomic CRM codebase. Customizing the application requires TypeScript and React programming skills. These upstream guides may help:

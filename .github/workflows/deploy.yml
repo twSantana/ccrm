@@ -142,7 +142,7 @@ jobs:
               name: 🔗 Supabase Link
               run: npx supabase link --project-ref $SUPABASE_PROJECT_ID
 
-            - if: ${{ env.IS_SUPABASE_CONFIGURED }}
+            - if: ${{ env.IS_SUPABASE_CONFIGURED && vars.SUPABASE_DB_PUSH_ENABLED == 'true' }}
               name: 📡 Push supabase migrations
               run: npx supabase db push
 
